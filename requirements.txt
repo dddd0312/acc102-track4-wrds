@@ -1,5 +1,5 @@
-streamlit==1.39.0
+streamlit
 wrds==3.1.6
-pandas
-matplotlib
+pandas>=2.0
+matplotlib>=3.7
 numpy
