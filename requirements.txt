@@ -1,3 +1,5 @@
 streamlit
+wrds
 pandas
 matplotlib
+numpy
