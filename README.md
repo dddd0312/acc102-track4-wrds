@@ -1,55 +1,50 @@
-# ACC102 Track 4: US Stock Financial Analysis Tool
-An interactive web-based financial analysis application built with Streamlit and WRDS database for analyzing U.S. public company performance.
+# ACC102 Track 4: WRDS US Stock Financial Analyzer
 
-## 📌 Project Overview
-This project is developed for ACC102 Track 4 assessment. It provides a user-friendly interface to calculate key financial ratios, visualize trends, and interpret corporate performance using reliable data from WRDS Compustat.
+## Project Overview
+This is an interactive web-based financial ratio analysis tool developed for the ACC102 Track 4 assignment.
+The application uses official **WRDS Compustat annual financial data** to calculate key financial metrics, generate trend visualizations, and provide automated performance analysis for selected US public stocks.
 
-## 🎯 Features
-- Secure WRDS database connection
-- Automatic financial ratio calculation
-- Interactive profitability and leverage charts
-- Real-time analysis interpretation
-- Clean and professional web interface
-- Side navigation panel for better experience
+## Features
+- ✅ Full English user interface
+- ✅ WRDS credential display (assignment requirement)
+- ✅ Customizable year range from **1990 to 2026**
+- ✅ Support for custom WRDS CSV data upload
+- ✅ Automatic core financial ratio calculation
+  - Return on Equity (ROE)
+  - Return on Assets (ROA)
+  - Debt-to-Asset Ratio
+  - Net Profit Margin
+- ✅ Interactive data filtering
+- ✅ Professional trend line & bar charts
+- ✅ Automated financial performance summary & evaluation
+- ✅ Built-in demo dataset for backup demonstration
+- ✅ Cloud deployment on Streamlit, one-click access
 
-## 📊 Financial Ratios Calculated
-- ROE (Return on Equity)
-- ROA (Return on Assets)
-- Debt-to-Asset Ratio
-- Net Profit Margin
-- Revenue Growth Rate
-- Current Ratio
+## Data Source
+- Primary Data: **WRDS Compustat North America Annual Fundamentals**
+- Required core financial variables:
+  - `tic` = Stock Ticker Symbol
+  - `fyear` = Fiscal Year
+  - `at` = Total Assets
+  - `lt` = Total Liabilities
+  - `sale` = Total Revenue / Net Sales
+  - `ni` = Net Income
 
-## 🧰 Technologies Used
-- Python
-- Streamlit
-- WRDS Database
-- Pandas
-- Matplotlib
+## How to Use
+1. **Enter WRDS Account Credentials** (display only, no live cloud connection required)
+2. **Set Analysis Parameters**
+   - Input target stock ticker (e.g. AAPL, MSFT, NVDA)
+   - Select start year (1990 - 2026)
+   - Select end year (1990 - 2026)
+3. **Upload Your WRDS CSV File**
+   - Upload the CSV file exported from official WRDS Compustat database
+4. Click **Run Full Financial Analysis**
+5. View the full financial dataset, calculated ratios, interactive charts and performance summary
 
-## 📂 Files in Repository
-- `app.py` - Main interactive application
-- `requirements.txt` - Required libraries
-- `analysis_notebook.ipynb` - Jupyter analysis notebook
-- `README.md` - Project documentation
+## Deployment & Running
+This application is built with Python and Streamlit.
 
-## 🌐 Online Application Link
-[(https://acc102-track4-wrds-kntpdvhrvancy6tm4e3bsb.streamlit.app)]
-
-## 📚 Data Source
-WRDS Compustat North America
-Annual Data (2000–2025)
-
-## ⚠️ Limitations
-1. The tool requires a valid WRDS account to access real-time data, which may limit public usage.
-2. Only annual financial data is included; quarterly or monthly data is not supported.
-3. No industry benchmark or peer comparison functions are available.
-4. The analysis is based purely on numerical financial ratios without qualitative factors.
-5. Potential missing data or extreme values may affect calculation accuracy.
-6. The tool does not support non-US stocks or private companies.
-
-## ✨ Author
-ACC102 Track 4 Project
-
-## 📝 Note
-This project is for academic use only.
+### Local Run
+1. Install required dependencies:
+```bash
+pip install streamlit pandas matplotlib
