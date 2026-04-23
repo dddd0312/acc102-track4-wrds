@@ -7,7 +7,7 @@ This project is developed for ACC102 Track 4 assessment. It provides a user-frie
 ## 🎯 Features
 - Secure WRDS database credential display (assignment requirement)
 - Support local WRDS CSV data upload and analysis
-- Customizable year range selection (1990–2026)
+- Customizable year range selection (1990–2025)
 - Automatic financial ratio calculation
 - Interactive profitability and leverage charts
 - Real-time analysis interpretation
