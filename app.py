@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# 页面配置
+# Page Configuration
 st.set_page_config(page_title="ACC102 WRDS Financial Analyzer", layout="wide")
 
-# 侧边导航栏
+# Sidebar Navigation Panel
 with st.sidebar:
     st.title("🧭 Navigation Panel")
     st.markdown("---")
@@ -17,73 +17,85 @@ with st.sidebar:
     st.markdown("---")
     st.info("ACC102 Track 4\nInteractive US Stock Analysis Tool")
 
-# 主标题
+# Main Page Title
 st.markdown("# 📊 ACC102 Track 4: WRDS US Stock Financial Analyzer")
 st.subheader("Interactive Financial Ratio & Trend Analysis")
 
-# WRDS 登录入口（保留作业要求）
-st.markdown("#### 🔑 WRDS Login Credentials")
+# WRDS Credentials Section (Required for Assignment)
+st.markdown("#### 🔑 WRDS Account Credentials")
 wrds_username = st.text_input("WRDS Username")
 wrds_password = st.text_input("WRDS Password", type="password")
 
-# ==============================
-# ✅ 这里已经帮你把年限改成 1990 - 2026
-# ==============================
+# Analysis Parameters (Year range updated: 1990 - 2026)
 st.markdown("#### ⚙️ Analysis Parameters")
-ticker = st.text_input("Stock Ticker (e.g. AAPL)", value="AAPL")
+ticker = st.text_input("Stock Ticker (e.g. AAPL, MSFT, NVDA)", value="AAPL")
 start_year = st.number_input("Start Year", min_value=1990, max_value=2026, value=2000)
 end_year = st.number_input("End Year", min_value=1990, max_value=2026, value=2025)
 
-# CSV 上传
-st.markdown("#### 📂 Upload Your WRDS Compustat CSV File")
-upload_file = st.file_uploader("Upload WRDS Annual Financial CSV", type="csv")
+# CSV File Upload Section
+st.markdown("#### 📂 Upload Your WRDS Exported CSV File")
+uploaded_csv = st.file_uploader("Upload Compustat Annual Financial CSV File", type="csv")
 
-# 运行分析
+# Run Full Analysis Button
 if st.button("🚀 Run Full Financial Analysis"):
 
     df = None
 
-    # 读取上传的 CSV
-    if upload_file:
-        df = pd.read_csv(upload_file)
-        st.success("✅ Successfully loaded your WRDS CSV data!")
+    # Load uploaded WRDS CSV data first
+    if uploaded_csv is not None:
+        try:
+            df = pd.read_csv(uploaded_csv)
+            st.success("✅ Official WRDS CSV data loaded successfully!")
 
-    # 兜底数据
+            # Check for required financial columns
+            required_columns = ["tic", "fyear", "at", "lt", "sale", "ni"]
+            missing_columns = [col for col in required_columns if col not in df.columns]
+
+            if missing_columns:
+                st.error(f"❌ Missing required financial columns: {missing_columns}")
+                st.info("Please re-export your Compustat CSV with tic, fyear, at, lt, sale, ni included.")
+                st.stop()
+
+        except Exception as e:
+            st.error(f"❌ Failed to read CSV file: {e}")
+            st.stop()
+
+    # Fallback built-in sample dataset
     if df is None or df.empty:
-        st.info("ℹ️ Using built-in sample WRDS dataset")
+        st.info("ℹ️ No CSV uploaded, loading built-in WRDS sample dataset for demonstration.")
         df = pd.DataFrame({
-            "fyear": [2000,2005,2010,2015,2020,2025],
-            "tic": ["AAPL"]*6,
+            "fyear": [2000, 2005, 2010, 2015, 2020, 2025],
+            "tic": ["AAPL"] * 6,
             "at": [20345, 53421, 75432, 153421, 323888, 382054],
             "lt": [12345, 32421, 45432, 98421, 258549, 309023],
             "sale": [12345, 42421, 65432, 183421, 274515, 391035],
             "ni": [2345, 8421, 15432, 48421, 57411, 97243]
         })
 
-    # 根据选择的年份筛选数据
-    df = df[(df["fyear"] >= start_year) & (df["fyear"] <= end_year)]
+    # Filter data by selected year range
+    df = df[(df["fyear"] >= start_year) & (df["fyear"] <= end_year)].reset_index(drop=True)
 
     if df.empty:
-        st.error("❌ No data available in the selected year range!")
+        st.error("❌ No financial data available within the selected year range.")
         st.stop()
 
-    # 财务比率计算
-    df["Equity"] = df["at"] - df["lt"]
-    df["ROE"] = (df["ni"] / df["Equity"]).round(3)
-    df["ROA"] = (df["ni"] / df["at"]).round(3)
+    # Financial Ratio Calculations
+    df["Total_Equity"] = df["at"] - df["lt"]
+    df["ROE (Return on Equity)"] = (df["ni"] / df["Total_Equity"]).round(3)
+    df["ROA (Return on Assets)"] = (df["ni"] / df["at"]).round(3)
     df["Debt_to_Asset_Ratio"] = (df["lt"] / df["at"]).round(3)
     df["Net_Profit_Margin"] = (df["ni"] / df["sale"]).round(3)
 
-    # 展示数据
-    st.subheader("📋 Financial Data & Calculated Ratios")
+    # Display Processed Financial Data
+    st.subheader("📋 Financial Dataset & Calculated Ratios")
     st.dataframe(df, use_container_width=True)
 
-    # 图表
+    # Visualization Charts
     st.subheader("📈 Financial Trend Visualization")
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
 
-    ax1.plot(df["fyear"], df["ROE"], marker="o", lw=3, label="ROE")
-    ax1.plot(df["fyear"], df["ROA"], marker="s", lw=3, label="ROA")
+    ax1.plot(df["fyear"], df["ROE (Return on Equity)"], marker="o", linewidth=3, label="ROE")
+    ax1.plot(df["fyear"], df["ROA (Return on Assets)"], marker="s", linewidth=3, label="ROA")
     ax1.set_title("Profitability Trend (ROE & ROA)", fontsize=14)
     ax1.set_xlabel("Fiscal Year")
     ax1.legend()
@@ -97,22 +109,24 @@ if st.button("🚀 Run Full Financial Analysis"):
     plt.tight_layout()
     st.pyplot(fig)
 
-    # 分析总结
-    st.subheader("📝 Financial Performance Summary")
-    avg_roe = round(df["ROE"].mean() * 100, 2)
-    avg_debt = round(df["Debt_to_Asset_Ratio"].mean() * 100, 2)
+    # Automatic Performance Analysis Summary
+    st.subheader("📝 Overall Financial Performance Summary")
+    average_roe = round(df["ROE (Return on Equity)"].mean() * 100, 2)
+    average_debt_ratio = round(df["Debt_to_Asset_Ratio"].mean() * 100, 2)
 
-    st.write(f"Average ROE: **{avg_roe}%**")
-    st.write(f"Average Debt-to-Asset Ratio: **{avg_debt}%**")
+    st.write(f"Average ROE over the period: **{average_roe}%**")
+    st.write(f"Average Debt-to-Asset Ratio over the period: **{average_debt_ratio}%**")
 
-    if avg_roe > 15:
-        st.success("✅ Excellent long-term profitability performance.")
-    elif avg_roe > 0:
-        st.info("⚠️ Moderate and stable profitability.")
+    # Profitability Evaluation
+    if average_roe > 15:
+        st.success("✅ The company demonstrates excellent and strong long-term profitability.")
+    elif average_roe > 0:
+        st.info("⚠️ The company shows moderate and stable overall profitability.")
     else:
-        st.warning("❌ Weak profitability during the selected period.")
+        st.warning("❌ The company shows weak profitability during the selected period.")
 
-    if avg_debt < 50:
-        st.success("✅ Low financial leverage, very low solvency risk.")
+    # Financial Risk Evaluation
+    if average_debt_ratio < 50:
+        st.success("✅ Low financial leverage, the company has low solvency and financial risk.")
     else:
-        st.warning("⚠️ Relatively high debt level, increased financial risk.")
+        st.warning("⚠️ Relatively high debt level, the company faces increased financial leverage risk.")
