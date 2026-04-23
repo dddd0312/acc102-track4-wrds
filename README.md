@@ -34,11 +34,11 @@ This project is developed for ACC102 Track 4 assessment. It provides a user-frie
 - `README.md` - Project documentation
 
 ## 🌐 Online Application Link
-[Your Streamlit App Link Here]
+[(https://acc102-track4-wrds-kntpdvhrvancy6tm4e3bsb.streamlit.app)]
 
 ## 📚 Data Source
 WRDS Compustat North America
-Annual Data (2020–2024)
+Annual Data (2000–2025)
 
 ## ⚠️ Limitations
 1. The tool requires a valid WRDS account to access real-time data, which may limit public usage.
